@@ -1,10 +1,18 @@
 module.exports = {
   content: ["./index.html", "./js/**/*.js"],
+  safelist: [
+    'bg-weather-primary',
+    'bg-weather-secondary',
+    'dark:bg-weather-primary',
+    'dark:bg-weather-secondary'
+  ],
   theme: {
     extend: {
       colors: {
         // Primary colors for different weather conditions
         'weather': {
+          'primary': '#2B3A67',    // Main header/footer color
+          'secondary': '#1A1B4B',  // Secondary header/footer color
           'clear': '#47BFDF',      // Bright blue for clear skies
           'cloudy': '#4A91FF',     // Soft blue for cloudy weather
           'rain': '#5B9BD5',       // Deep blue for rainy weather

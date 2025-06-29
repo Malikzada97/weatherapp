@@ -271,6 +271,14 @@
 }
 
 /* Weather condition backgrounds */
+.bg-weather-primary {
+  background-color: #2B3A67;
+}
+
+.bg-weather-secondary {
+  background-color: #1A1B4B;
+}
+
 .bg-weather-clear {
   @apply bg-gradient-to-b from-weather-clear/40 to-weather-clear/20 dark:from-weather-clear/30 dark:to-weather-clear/10;
 }

@@ -25,6 +25,78 @@ const retry = async (fn, retries = MAX_RETRIES, delay = RETRY_DELAY) => {
 };
 
 /**
+ * Make API request - either to serverless function or direct API
+ * @param {string|Object} location - City name or { lat, lon } coordinates
+ * @param {string} type - 'current' or 'forecast'
+ * @returns {Promise<Object>} - Weather data
+ */
+const makeApiRequest = async (location, type = 'current') => {
+  if (config.USE_SERVERLESS) {
+    // Use serverless function
+    console.log(`🌐 Using serverless function for ${type} weather data`);
+    
+    const response = await fetch(BASE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ location, type })
+    });
+    
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+      }
+      
+      console.error('Serverless function error:', errorData);
+      throw new Error(errorData.error || `Failed to fetch weather data (${response.status})`);
+    }
+    
+    return await response.json();
+  } else {
+    // Use direct API (for local development)
+    console.log(`🌐 Using direct API for ${type} weather data`);
+    
+    let url;
+    if (type === 'forecast') {
+      if (typeof location === 'string') {
+        // For forecast with city name, we need to get coordinates first
+        const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=1&appid=${API_KEY}`;
+        const geoResponse = await fetch(geoUrl);
+        const geoData = await geoResponse.json();
+        
+        if (!geoData.length) {
+          throw new Error('City not found');
+        }
+        
+        const { lat, lon } = geoData[0];
+        url = `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+      } else {
+        url = `${BASE_URL}/forecast?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}`;
+      }
+    } else {
+      if (typeof location === 'string') {
+        url = `${BASE_URL}/weather?q=${encodeURIComponent(location)}&appid=${API_KEY}`;
+      } else {
+        url = `${BASE_URL}/weather?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}`;
+      }
+    }
+    
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch weather data');
+    }
+    
+    return await response.json();
+  }
+};
+
+/**
  * Fetch current weather data for a city or coordinates
  * @param {string|Object} location - City name or { lat, lon } coordinates
  * @returns {Promise<Object>} - Weather data
@@ -46,23 +118,7 @@ export const fetchCurrentWeather = async (location) => {
     }
     
     const fetchData = async () => {
-      let url;
-      if (typeof location === 'string') {
-        url = `${BASE_URL}/weather?q=${encodeURIComponent(location)}&appid=${API_KEY}`;
-      } else if (location.lat && location.lon) {
-        url = `${BASE_URL}/weather?lat=${location.lat}&lon=${location.lon}&appid=${API_KEY}`;
-      } else {
-        throw new Error('Invalid location provided');
-      }
-      
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch weather data');
-      }
-      
-      const data = await response.json();
+      const data = await makeApiRequest(location, 'current');
       
       // Cache the data
       cache.set(cacheKey, data);
@@ -100,15 +156,7 @@ export const fetchFiveDayForecast = async (lat, lon) => {
     }
     
     const fetchData = async () => {
-      const url = `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch forecast data');
-      }
-      
-      const data = await response.json();
+      const data = await makeApiRequest({ lat, lon }, 'forecast');
       
       // Process forecast data to get one entry per day
       const dailyForecast = processForecastData(data.list);

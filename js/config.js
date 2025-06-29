@@ -1,6 +1,10 @@
 // Configuration file for the weather app
 // This file manages all configuration values including API keys
 
+// Check if we're on Netlify (production) or local development
+const isNetlify = window.location.hostname.includes('netlify.app') || 
+                  window.location.hostname.includes('netlify.com');
+
 // Try to get environment variables (for build-time processing)
 const getEnvVar = (key) => {
   // In a browser environment, process.env might not be available
@@ -16,7 +20,11 @@ const getEnvVar = (key) => {
 };
 
 export const config = {
-  // OpenWeatherMap API Configuration
+  // API Configuration
+  USE_SERVERLESS: isNetlify, // Use serverless function on Netlify
+  SERVERLESS_URL: '/.netlify/functions/weather',
+  
+  // OpenWeatherMap API Configuration (for local development)
   OPENWEATHER_API_KEY: getEnvVar('OPENWEATHER_API_KEY'),
   OPENWEATHER_BASE_URL: getEnvVar('OPENWEATHER_BASE_URL') || 'https://api.openweathermap.org/data/2.5',
   
@@ -49,6 +57,11 @@ export const config = {
 
 // Helper function to get API key with validation
 export const getApiKey = () => {
+  // If using serverless function, we don't need the API key on client side
+  if (config.USE_SERVERLESS) {
+    return 'serverless';
+  }
+  
   const apiKey = config.OPENWEATHER_API_KEY;
   
   if (!apiKey || apiKey === 'your_api_key_here') {
@@ -61,6 +74,9 @@ export const getApiKey = () => {
 
 // Helper function to get base URL
 export const getBaseUrl = () => {
+  if (config.USE_SERVERLESS) {
+    return config.SERVERLESS_URL;
+  }
   return config.OPENWEATHER_BASE_URL;
 };
 
@@ -87,4 +103,38 @@ export const getAllConfig = () => {
 // Development helper to log configuration
 if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
   console.log('🔧 Weather App Configuration:', config);
+}
+
+// Configuration validation helper
+export const validateConfig = () => {
+  const validation = {
+    isNetlify: config.USE_SERVERLESS,
+    hasApiKey: config.USE_SERVERLESS ? 'serverless' : (config.OPENWEATHER_API_KEY ? 'local' : 'missing'),
+    baseUrl: config.USE_SERVERLESS ? config.SERVERLESS_URL : config.OPENWEATHER_BASE_URL,
+    environment: window.location.hostname
+  };
+  
+  console.log('🔍 Configuration Validation:', validation);
+  
+  if (config.USE_SERVERLESS) {
+    console.log('✅ Running on Netlify - using serverless functions');
+  } else {
+    if (!config.OPENWEATHER_API_KEY || config.OPENWEATHER_API_KEY === 'your_api_key_here') {
+      console.warn('⚠️  Local development: API key not configured');
+    } else {
+      console.log('✅ Local development: API key configured');
+    }
+  }
+  
+  return validation;
+};
+
+// Auto-validate on load
+if (typeof window !== 'undefined') {
+  // Wait for DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', validateConfig);
+  } else {
+    validateConfig();
+  }
 } 
