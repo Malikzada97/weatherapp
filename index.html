@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sard-o-Garam | Modern Weather App</title>
+  <meta name="description" content="A modern weather application with 5-day forecast, geolocation, and animated effects">
+  <link rel="icon" href="./public/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./dist/style.css">
+  <!-- <link rel="stylesheet" href="./css/style.css"> -->
+</head>
+<body class="min-h-full bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+  <div id="app" class="min-h-screen flex flex-col">
+    <!-- Header with search -->
+    <header class="bg-weather-primary dark:bg-weather-secondary shadow-lg">
+      <div class="container mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <h1 class="text-2xl font-bold text-white">
+              <span class="text-yellow-300">Sard</span>-o-<span class="text-yellow-300">Garam</span>
+            </h1>
+            <button id="darkModeToggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                <path id="darkModeIcon" fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="relative flex items-center gap-2">
+            <div class="relative flex-1">
+              <input 
+                type="text" 
+                id="citySearch" 
+                placeholder="Search for a city..." 
+                class="w-full py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-gray-800 dark:text-white"
+              >
+              <button id="searchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-yellow-300 hover:bg-yellow-400 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            <button id="locationBtn" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-white flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+              </svg>
+              <span class="hidden md:inline">My Location</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 container mx-auto px-4 py-8">
+      <!-- Error Banner -->
+      <div id="errorBanner" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
+        <div class="flex justify-between items-center">
+          <p id="errorMessage"></p>
+          <button id="closeErrorBtn" class="text-red-700 hover:text-red-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loadingSpinner" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-300"></div>
+      </div>
+
+      <!-- Weather Display -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Current Weather -->
+        <div class="lg:col-span-2">
+          <div id="currentWeather" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300">
+            <div class="p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h2 id="currentCity" class="text-2xl font-bold dark:text-white">--</h2>
+                  <p id="currentDate" class="text-gray-500 dark:text-gray-400">--</p>
+                  <p id="currentDescription" class="text-lg dark:text-gray-300 capitalize">--</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button id="unitToggle" class="px-3 py-1 rounded-full bg-yellow-300 hover:bg-yellow-400 text-gray-800 font-medium transition">°C</button>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                  <div id="currentIcon" class="w-24 h-24">
+                    <!-- Weather icon will be inserted here -->
+                  </div>
+                  <div>
+                    <p id="currentTemp" class="text-5xl font-bold dark:text-white">--°</p>
+                    <p id="currentFeelsLike" class="text-gray-500 dark:text-gray-400">Feels like --°</p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                    <p class="text-gray-500 dark:text-gray-400">Humidity</p>
+                    <p id="currentHumidity" class="text-xl font-semibold dark:text-white">--%</p>
+                  </div>
+                  <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                    <p class="text-gray-500 dark:text-gray-400">Wind</p>
+                    <p id="currentWind" class="text-xl font-semibold dark:text-white">-- km/h</p>
+                  </div>
+                  <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                    <p class="text-gray-500 dark:text-gray-400">Pressure</p>
+                    <p id="currentPressure" class="text-xl font-semibold dark:text-white">-- hPa</p>
+                  </div>
+                  <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                    <p class="text-gray-500 dark:text-gray-400">Visibility</p>
+                    <p id="currentVisibility" class="text-xl font-semibold dark:text-white">-- km</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5-Day Forecast -->
+          <div class="mt-8">
+            <h3 class="text-xl font-bold mb-4 dark:text-white">5-Day Forecast</h3>
+            <div id="forecastContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <!-- Forecast cards will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Search History -->
+        <div>
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 h-full transition-all duration-300">
+            <h3 class="text-xl font-bold mb-4 dark:text-white">Search History</h3>
+            <div id="searchHistory" class="space-y-2">
+              <!-- History items will be inserted here -->
+              <p class="text-gray-500 dark:text-gray-400 text-center py-4">Your search history will appear here</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Weather Effects Overlay -->
+    <div id="weatherEffects" class="fixed inset-0 pointer-events-none z-0 opacity-0 transition-opacity duration-500"></div>
+
+    <!-- Footer -->
+    <footer class="bg-weather-primary dark:bg-weather-secondary text-white py-4">
+      <div class="container mx-auto px-4 text-center">
+        <p>© <span id="currentYear"></span> Sard-o-Garam. Powered by OpenWeatherMap API.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/utils.js"></script>
+  <script type="module" src="./js/api.js"></script>
+  <script type="module" src="./js/geolocation.js"></script>
+  <script type="module" src="./js/ui.js"></script>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
