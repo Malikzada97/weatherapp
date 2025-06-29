@@ -5,13 +5,13 @@
 /* Custom styles */
 @layer components {
   .forecast-card {
-    @apply bg-white/30 dark:bg-ui-dark/30 backdrop-blur-md p-4 rounded-xl shadow-lg transition-all duration-500 hover:shadow-xl hover:scale-102;
+    @apply bg-white/30 dark:bg-ui-dark/30 backdrop-blur-md p-4 rounded-xl shadow-lg transition-all duration-500 hover:shadow-xl hover:scale-105;
     transform: translateZ(0);
     will-change: transform;
   }
   
   .history-item {
-    @apply bg-white/30 dark:bg-ui-dark/30 backdrop-blur-md p-3 rounded-lg cursor-pointer transition-all duration-500 hover:bg-white/40 dark:hover:bg-ui-dark/40 hover:scale-102 flex justify-between items-center;
+    @apply bg-white/30 dark:bg-ui-dark/30 backdrop-blur-md p-3 rounded-lg cursor-pointer transition-all duration-500 hover:bg-white/40 dark:hover:bg-ui-dark/40 hover:scale-105 flex justify-between items-center;
     transform: translateZ(0);
     will-change: transform;
   }
@@ -23,7 +23,7 @@
   }
 
   .weather-detail {
-    @apply bg-white/30 dark:bg-ui-dark/30 backdrop-blur-md p-4 rounded-lg hover:scale-102 transition-all duration-500;
+    @apply bg-white/30 dark:bg-ui-dark/30 backdrop-blur-md p-4 rounded-lg hover:scale-105 transition-all duration-500;
     transform: translateZ(0);
     will-change: transform;
   }

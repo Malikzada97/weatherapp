@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A modern weather application with Tailwind CSS",
   "scripts": {
+    "build": "npm run build:css",
     "build:css": "tailwindcss -i ./css/style.css -o ./dist/style.css --minify",
     "watch:css": "tailwindcss -i ./css/style.css -o ./dist/style.css --watch",
     "start": "live-server",
