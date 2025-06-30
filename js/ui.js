@@ -54,7 +54,7 @@ import {
     
     // Update city and date
     currentCityEl.textContent = `${data.name}, ${data.sys.country}`;
-    currentCityEl.className = 'text-2xl font-bold dark:text-white animate-float';
+    currentCityEl.className = 'text-2xl font-bold dark:text-white';
     currentDateEl.textContent = formatDate(data.dt);
     
     // Update weather description
