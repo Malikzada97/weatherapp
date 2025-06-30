@@ -1,90 +1,127 @@
-# WeatherSphere
+# Sard-o-Garam
 
-A modern weather application with 5-day forecast, geolocation, and animated effects.
+A modern, responsive weather application that provides current weather, 5-day forecasts, geolocation-based weather, and animated effects. Built for learning and demonstration purposes.
 
-## Features
+---
 
-- Current weather conditions
-- 5-day forecast
+## 🌦️ Project Overview
+
+WeatherSphere is a feature-rich weather app that leverages the OpenWeatherMap API to provide:
+- Real-time weather conditions
+- 5-day weather forecasts
+- City search with autocomplete
 - Geolocation support
-- Temperature unit toggle (°C/°F)
-- Dark mode
-- Search history
-- Weather-specific animations
-- Responsive design
-- Secure API key handling with serverless functions
+- Animated weather effects (rain, snow, clouds)
+- Dark mode and responsive design
+- Search history and temperature unit toggle
 
-## Technologies
+This project is designed for educational and assignment use, with a focus on modern web development best practices.
 
-- HTML5
-- Tailwind CSS
-- JavaScript (ES6+)
-- OpenWeatherMap API
-- Netlify Functions (for secure API calls)
+---
 
-## Setup
+## 🚀 Features
 
-### Local Development
+- **Current Weather:** Get up-to-date weather for any city or your current location.
+- **5-Day Forecast:** View detailed forecasts for the next five days.
+- **Geolocation:** Instantly fetch weather for your current position.
+- **City Autocomplete:** Search with real-time city suggestions.
+- **Animated Effects:** Visual rain, snow, and cloud animations based on weather.
+- **Dark Mode:** Toggle between light and dark themes.
+- **Temperature Units:** Switch between Celsius and Fahrenheit.
+- **Search History:** Quickly revisit previous searches.
+- **Responsive UI:** Works on desktop, tablet, and mobile.
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables: `npm run setup:env`
-4. Add your OpenWeatherMap API key to the `.env` file
-5. Validate environment setup: `npm run validate:env`
-6. Start development server: `npm run watch:css` (in one terminal) and `npm start` (in another terminal)
+---
 
-### Netlify Deployment
+## 🛠️ Technologies Used
 
-1. Push your code to GitHub
-2. Connect your repository to Netlify
-3. In Netlify dashboard, go to Site Settings > Environment Variables
-4. Add environment variable:
-   - Key: `OPENWEATHER_API_KEY`
-   - Value: Your OpenWeatherMap API key
-5. Deploy your site
+- **HTML5**
+- **Tailwind CSS**
+- **JavaScript (ES6+)**
+- **OpenWeatherMap API**
+- **Netlify Functions** (for secure API calls in production)
 
-The app automatically detects when it's running on Netlify and uses serverless functions to keep your API key secure.
+---
 
-## API Key Configuration
+## ⚡ Quick Start
 
 ### Local Development
-1. Run `npm run setup:env` to create the `.env` file
-2. Add your OpenWeatherMap API key to the `.env` file:
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd weather-app
    ```
-   OPENWEATHER_API_KEY=your_actual_api_key_here
+2. **Install dependencies:**
+   ```bash
+   npm install
    ```
-3. The application will automatically use the key from the `.env` file
+3. **Set up environment variables (optional for local):**
+   ```bash
+   npm run setup:env
+   # Add your OpenWeatherMap API key to the .env file if not hardcoded
+   ```
+4. **Start the development server:**
+   ```bash
+   npm run watch:css   # In one terminal (for Tailwind CSS)
+   npm start           # In another terminal (for the app)
+   ```
 
-### Netlify Deployment
-1. Go to your Netlify dashboard
-2. Navigate to Site Settings > Environment Variables
-3. Add a new environment variable:
-   - Key: `OPENWEATHER_API_KEY`
-   - Value: Your OpenWeatherMap API key
-4. Redeploy your site
+### Netlify Deployment (Assignment/Demo Mode)
 
-### Security Features
-- API keys are never exposed to the client-side code on Netlify
-- Serverless functions handle all API calls securely
-- Local development still works with direct API calls for convenience
+- The app is ready to deploy to Netlify with the API key hardcoded in `js/config.js` for demonstration purposes.
+- **No environment variable setup is required for the assignment.**
+- Just push your code to GitHub and connect your repository to Netlify.
+- The app will work out-of-the-box after deployment.
 
-## Environment Variables
+---
 
-The application supports the following environment variables:
+## 🔑 API Key Handling (Assignment/Demo Mode)
 
-- `OPENWEATHER_API_KEY`: Your OpenWeatherMap API key (required)
-- `NODE_ENV`: Environment mode (development/production)
-- `PORT`: Server port (default: 3000)
-- `CACHE_DURATION`: Cache duration in milliseconds (default: 600000)
+- For this assignment/demo, the OpenWeatherMap API key is hardcoded in `js/config.js`:
+  ```js
+  OPENWEATHER_API_KEY: 'dacc36845acc003ff207a6e657a47718',
+  ```
+- **This is NOT recommended for production!**
+- In a real deployment, use environment variables or Netlify Functions to keep your API key secure.
 
-## Security Notes
+---
 
-- The `.env` file is automatically added to `.gitignore` to prevent API keys from being committed
-- Never commit your actual API keys to version control
-- For production deployments, use proper environment variable management
-- On Netlify, API calls are handled by serverless functions to keep keys secure
+## 📝 Usage
 
-## Available Scripts
+1. **Search for a city:** Enter a city name and select from suggestions.
+2. **Use geolocation:** Click the location button to get weather for your current position.
+3. **Switch units:** Toggle between °C and °F.
+4. **Toggle dark mode:** Use the dark mode button for a night-friendly UI.
+5. **View search history:** Click previous cities to quickly reload their weather.
+
+---
+
+## 🛡️ Security Notes
+
+- **API Key Exposure:** The API key is visible in client-side code for this assignment. Remove or rotate the key before sharing the code publicly.
+- **Production Security:** For real-world use, always use environment variables and serverless functions to keep API keys secret.
+- **.env File:** The `.env` file is ignored by git and not required for this assignment deployment.
+
+---
+
+## 🗂️ Project Structure
+
+```
+weather-app/
+├── js/                # Main JavaScript source files
+│   ├── config.js      # App configuration (API key here for assignment)
+│   ├── api.js         # API interaction logic
+│   └── ...
+├── css/               # Styles (Tailwind CSS)
+├── netlify/functions/ # Serverless function (for production security)
+├── index.html         # Main HTML file
+└── ...
+```
+
+---
+
+## 🧩 Available Scripts
 
 - `npm run setup:env` - Create and configure environment file
 - `npm run validate:env` - Validate environment configuration
@@ -92,14 +129,22 @@ The application supports the following environment variables:
 - `npm run watch:css` - Watch and build CSS during development
 - `npm start` - Start development server
 
-## Troubleshooting
+---
 
-### "Invalid API key" error on Netlify
-1. Make sure you've added the `OPENWEATHER_API_KEY` environment variable in Netlify dashboard
-2. Check that the API key is correct and active
-3. Redeploy your site after adding the environment variable
+## ❓ Troubleshooting
 
-### Local development issues
-1. Ensure your `.env` file exists and contains the correct API key
-2. Run `npm run validate:env` to check your configuration
-3. Make sure you're running the latest version of Node.js
+- **Weather not loading?**
+  - Check your internet connection.
+  - Make sure the API key in `js/config.js` is valid and active.
+- **API key errors on Netlify?**
+  - For this assignment, the key is hardcoded, so no environment variable setup is needed.
+- **Other issues?**
+  - Check the browser console for errors.
+  - Review the configuration in `js/config.js`.
+
+---
+
+## 📢 License & Attribution
+
+- This project is for educational and demonstration purposes only.
+- Weather data provided by [OpenWeatherMap](https://openweathermap.org/).
