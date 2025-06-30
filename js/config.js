@@ -21,7 +21,7 @@ const getEnvVar = (key) => {
 
 export const config = {
   // API Configuration
-  USE_SERVERLESS: isNetlify, // Use serverless function on Netlify
+  USE_SERVERLESS: false, // Always use direct API calls, even on Netlify
   SERVERLESS_URL: '/.netlify/functions/weather',
   
   // OpenWeatherMap API Configuration (for local development)
