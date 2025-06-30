@@ -25,7 +25,7 @@ export const config = {
   SERVERLESS_URL: '/.netlify/functions/weather',
   
   // OpenWeatherMap API Configuration (for local development)
-  OPENWEATHER_API_KEY: getEnvVar('OPENWEATHER_API_KEY'),
+  OPENWEATHER_API_KEY: 'dacc36845acc003ff207a6e657a47718', // <-- Hardcoded for assignment/demo
   OPENWEATHER_BASE_URL: getEnvVar('OPENWEATHER_BASE_URL') || 'https://api.openweathermap.org/data/2.5',
   
   // App Configuration
